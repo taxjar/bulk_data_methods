@@ -166,7 +166,7 @@ module BulkMethodsMixin
     unless options[:set_array]
       column_names =  rows[0].keys
       columns_to_remove = [:id]
-      columns_to_remove += [partition_keys].map{|k| k.to_sym} if respond_to?(:partition_keys)
+      columns_to_remove += partition_keys.map{|k| k.to_sym} if respond_to?(:partition_keys)
       options[:set_array] = '"' + (column_names - columns_to_remove.flatten).map{|cn| "#{cn} = datatable.#{cn}"}.join(',') + '"'
     end
     options[:slice_size] = 1000 unless options[:slice_size]
