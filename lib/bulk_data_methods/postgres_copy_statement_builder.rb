@@ -22,6 +22,7 @@ module BulkDataMethods
     # @option options [Array<String>] :force_not_null do not match the specified columns' values against the null string. In the default case where the null string is empty,
     #   this means that empty values will be read as zero-length strings rather than nulls, even when they are not quoted
     # @option options [String] :encoding specifies that the file is encoded in the encoding_name. If this option is omitted, the current client encoding is used
+    # @option options [String] :file_format ('CSV' or 'TEXT') format of loaded file
     def self.create_many(path, options, obj)
       return [] unless File.exist?(path)
 
@@ -32,15 +33,22 @@ module BulkDataMethods
       end
       column_names = (column_names - ["id"]).join(',')
 
-      copy_opt = ["CSV"]
+      case options[:file_format].to_s.upcase
+        when "CSV"
+          copy_opt = ["CSV"]
+          copy_opt << ["HEADER"] if options[:header]
+          copy_opt << ["QUOTE", "'#{options[:quote]}'"] if options[:quote]
+          copy_opt << ["ESCAPE", "'#{options[:escape]}'"] if options[:escape]
+          if options[:force_not_null] && options[:force_not_null].is_a?(Array)
+            copy_opt << ["FORCE NOT NULL", "#{options[:force_not_null].join(',')}"]
+          end
+        when "TEXT"
+          copy_opt = ["TEXT"]
+        else
+          copy_opt = ["TEXT"]
+      end
       copy_opt << ["DELIMITER", "'#{options[:delimiter]}'"] if options[:delimiter]
       copy_opt << ["NULL", "'#{options[:null]}'"] if options[:null]
-      copy_opt << ["HEADER"] if options[:header]
-      copy_opt << ["QUOTE", "'#{options[:quote]}'"] if options[:quote]
-      copy_opt << ["ESCAPE", "'#{options[:escape]}'"] if options[:escape]
-      if options[:force_not_null] && options[:force_not_null].is_a?(Array)
-        copy_opt << ["FORCE NOT NULL", "#{options[:force_not_null].join(',')}"]
-      end
       copy_opt << ["ENCODING", "'#{options[:encoding]}'"] if options[:encoding]
 
       sql_copy_string = <<-SQL

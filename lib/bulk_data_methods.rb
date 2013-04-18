@@ -36,6 +36,10 @@ module BulkDataMethods
       configuration.returning
     end
 
+    def file_format
+      configuration.file_format
+    end
+
   end
 
 end

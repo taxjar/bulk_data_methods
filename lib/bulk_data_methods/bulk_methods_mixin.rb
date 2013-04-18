@@ -70,6 +70,7 @@ module BulkMethodsMixin
   # @option options [Array<String>] :force_not_null do not match the specified columns' values against the null string. In the default case where the null string is empty,
   #   this means that empty values will be read as zero-length strings rather than nulls, even when they are not quoted
   # @option options [String] :encoding specifies that the file is encoded in the encoding_name. If this option is omitted, the current client encoding is used
+  # @option options [String] :file_format ('CSV' or 'TEXT') format of loaded file
   def create_many(rows, options = {})
     return [] if rows.blank?
     set_options(options)
@@ -209,13 +210,15 @@ module BulkMethodsMixin
   # @option options [Class] :statement_builder determines from which class will called create_many method
   # @option options [Integer] :slice_size (1000) how many records will be created in a single SQL query
   # @option options [Boolean] :check_consistency (true) ensure some modicum of sanity on the incoming dataset, specifically: does each row define the same set of key/value pairs
-  # @option options [Array or String] :returning (nil) list of fields to return.
+  # @option options [Array or String] :returning (nil) list of fields to return
+  # @option options [String] :file_format ('CSV' or 'TEXT') format of loaded file
   # @return [<Hash>] options
   def set_options(options)
     options[:statement_builder] = options[:statement_builder].try(:constantize) || BulkDataMethods.statement_builder
     options[:slice_size] ||= BulkDataMethods.slice_size
     options[:check_consistency] = BulkDataMethods.check_consistency unless options.has_key?(:check_consistency)
     options[:returning] ||= BulkDataMethods.returning
+    options[:file_format] ||= BulkDataMethods.file_format
 
     options
   end

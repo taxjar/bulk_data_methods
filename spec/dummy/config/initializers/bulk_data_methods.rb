@@ -3,5 +3,7 @@ BulkDataMethods.configure do |config|
   config.statement_builder = "::BulkDataMethods::GenericBulkInsertStatementBuilder"
   # how many records will be created in a single SQL query
   config.slice_size = 1000
+  # format of loaded file
+  config.file_format = 'CSV'
 end
 
