@@ -29,26 +29,6 @@ describe "PostgresCopyStatementBuilder" do
       end
     end # when file doesn't exist
 
-    context "when column_names option is set" do
-
-      before do
-        options[:column_names] = ["created_at","updated_at","name","salary",:company_id,:integer_field]
-      end
-
-      it "creates the record" do
-        str = "02/04/13 01:20 PM,02/04/13 01:20 PM,Mike,1000,1,32"
-        path_to_file = create_file('csv', str)
-        subject.create_many(
-                             path_to_file,
-                             options,
-                             Employee
-                            )
-        delete_file(path_to_file)
-        Employee.all.should have(1).item
-      end
-
-    end # when column_names option is set
-
     context "when file format is csv" do
 
       it "creates the record" do
@@ -67,8 +47,12 @@ describe "PostgresCopyStatementBuilder" do
 
     context "when file format is text" do
 
+      before do
+        options[:file_format] = "TEXT"
+      end
+
       it "creates the record" do
-        str = "02/04/13 01:20 PM,02/04/13 01:20 PM,Mike,1000,1,32"
+        str = "2013-04-19 18:07:13.336681	2013-04-19 18:07:13.336681	Alex	100	1	12"
         path_to_file = create_file('text', str)
         subject.create_many(
                              path_to_file,
@@ -116,6 +100,26 @@ describe "PostgresCopyStatementBuilder" do
       end
 
     end # when column_names option isn't' set
+
+    context "when delimiter option is set" do
+
+      before do
+        options[:delimiter] = ';'
+      end
+
+      it "creates the record" do
+        str = "02/04/13 01:20 PM;02/04/13 01:20 PM;Mike;1000;1;32"
+        path_to_file = create_file('csv', str)
+        subject.create_many(
+                             path_to_file,
+                             options,
+                             Employee
+                            )
+        delete_file(path_to_file)
+        Employee.all.should have(1).item
+      end
+
+    end # when delimiter option is set
 
     context "when null option is set" do
 
