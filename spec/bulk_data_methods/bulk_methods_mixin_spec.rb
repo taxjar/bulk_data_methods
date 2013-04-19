@@ -264,7 +264,7 @@ describe "BulkMethodsMixin" do
     context "when options set as an empty hash" do
       it "returns default values that were set in the initializer" do
         options = {}
-        opt = Employee.set_options(options)
+        opt = BulkMethodsMixin.set_options(options)
         opt[:statement_builder].should == BulkDataMethods.statement_builder
         opt[:slice_size].should == BulkDataMethods.slice_size
         opt[:check_consistency].should == BulkDataMethods.check_consistency
@@ -280,7 +280,7 @@ describe "BulkMethodsMixin" do
                     :check_consistency => false,
                     :returning => :id
                   }
-        opt = Employee.set_options(options)
+        opt = BulkMethodsMixin.set_options(options)
         opt[:statement_builder].should == options[:statement_builder]
         opt[:slice_size].should == options[:slice_size]
         opt[:check_consistency].should == options[:check_consistency]

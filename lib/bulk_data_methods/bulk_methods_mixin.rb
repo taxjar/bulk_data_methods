@@ -73,7 +73,7 @@ module BulkMethodsMixin
   # @option options [String] :file_format ('CSV' or 'TEXT') format of loaded file
   def create_many(rows, options = {})
     return [] if rows.blank?
-    set_options(options)
+    options = BulkMethodsMixin.set_options(options)
     options[:statement_builder].create_many(rows, options, self)
   end
 
@@ -132,7 +132,7 @@ module BulkMethodsMixin
   #   the standard active record model for time columns (and you have an updated_at column)
   def update_many(rows, options = {})
     return [] if rows.blank?
-    set_options(options)
+    options = BulkMethodsMixin.set_options(options)
     if rows.is_a?(Hash)
       options[:where] = '"' + rows.keys[0].keys.map{|key| '#{table_name}.' + "#{key} = datatable.#{key}"}.join(' and ') + '"'
       options[:set_array] = '"' + rows.values[0].keys.map{|key| "#{key} = datatable.#{key}"}.join(',') + '"' unless options[:set_array]
@@ -213,7 +213,7 @@ module BulkMethodsMixin
   # @option options [Array or String] :returning (nil) list of fields to return
   # @option options [String] :file_format ('CSV' or 'TEXT') format of loaded file
   # @return [<Hash>] options
-  def set_options(options)
+  def BulkMethodsMixin.set_options(options)
     options[:statement_builder] = options[:statement_builder].try(:constantize) || BulkDataMethods.statement_builder
     options[:slice_size] ||= BulkDataMethods.slice_size
     options[:check_consistency] = BulkDataMethods.check_consistency unless options.has_key?(:check_consistency)

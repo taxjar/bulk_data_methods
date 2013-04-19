@@ -10,12 +10,6 @@ module BulkDataMethods
 
   class << self
 
-    attr_writer :configuration
-
-    def configure
-      yield(configuration)
-    end
-
     def configuration
       @configuration ||= Configuration.new
     end
@@ -24,20 +18,40 @@ module BulkDataMethods
       configuration.statement_builder.constantize
     end
 
+    def statement_builder=(statement_builder)
+      configuration.statement_builder = statement_builder
+    end
+
     def slice_size
       configuration.slice_size
+    end
+
+    def slice_size=(slice_size)
+      configuration.slice_size = slice_size
     end
 
     def check_consistency
       configuration.check_consistency
     end
 
+    def check_consistency=(check_consistency)
+      configuration.check_consistency = check_consistency
+    end
+
     def returning
       configuration.returning
     end
 
+    def returning=(returning)
+      configuration.returning = returning
+    end
+
     def file_format
       configuration.file_format
+    end
+
+    def file_format=(file_format)
+      configuration.file_format = file_format
     end
 
   end

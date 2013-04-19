@@ -5,20 +5,6 @@ This gem allows:
 MixIn used to extend ActiveRecord::Base classes implementing bulk insert and update operations
 through {#create_many} and {#update_many}.
 
-## Using gem
-
-Add 'bulk_data_methods' to the Gemfile in your project
-
-<code>
-  gem 'bulk_data_methods'
-</code>
-
-Run the generator
-
-<code>
-  rails generate bulk_data_methods
-</code>
-
 Extend methods to your class which inherits from the ActiveRecord::Base
 
 ```ruby

@@ -12,7 +12,7 @@ describe "GenericBulkInsertStatementBuilder" do
   end
 
   let!(:subject) { ::BulkDataMethods::GenericBulkInsertStatementBuilder }
-  let!(:options) { Employee.set_options(:statement_builder => 'BulkDataMethods::GenericBulkInsertStatementBuilder') }
+  let!(:options) { BulkMethodsMixin.set_options(:statement_builder => 'BulkDataMethods::GenericBulkInsertStatementBuilder') }
 
   describe "#create_many" do
 

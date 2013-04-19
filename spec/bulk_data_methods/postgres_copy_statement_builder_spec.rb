@@ -15,7 +15,7 @@ describe "PostgresCopyStatementBuilder" do
   end
 
   let!(:subject) { ::BulkDataMethods::PostgresCopyStatementBuilder }
-  let!(:options) { Employee.set_options(:statement_builder => 'BulkDataMethods::PostgresCopyStatementBuilder') }
+  let!(:options) { BulkMethodsMixin.set_options(:statement_builder => 'BulkDataMethods::PostgresCopyStatementBuilder') }
 
   describe "#create_many" do
 
