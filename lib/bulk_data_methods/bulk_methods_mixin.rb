@@ -194,12 +194,11 @@ module BulkMethodsMixin
       end
       returning_clause = "\" returning #{returning_list}\""
     end
-    options[:where_datatable] = '"#{table_name}.id = datatable.id"' unless options[:where_datatable]
-    where_clause = options[:where_datatable]
+    where_clause = options[:where_datatable] || '"#{table_name}.id = datatable.id"'
+    where_constraint = '""'
     if options[:where_constraint]
-      where_clause += ' AND options[:where_constraint]'
+      where_constraint = '" AND ' + options[:where_constraint] + '"'
     end
-
     returning = []
 
     rows.group_by do |row|
@@ -236,6 +235,7 @@ module BulkMethodsMixin
           ) as datatable
           where
             #{eval(where_clause)}
+            #{eval(where_constraint)}
           #{eval(returning_clause)}
         SQL
         returning += find_by_sql(sql_update_string)

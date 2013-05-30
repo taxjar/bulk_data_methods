@@ -350,7 +350,7 @@ describe "BulkMethodsMixin" do
       it "updates only name column, where salary equal input values" do
         Employee.update_many([{ :id => 1, :name => 'Elvis', :salary => 12 },
                               { :id => 2, :name => 'Freddi',:salary => 22}],
-                              { :where => '"#{table_name}.salary = datatable.salary"' })
+                              { :where_constraint => '#{table_name}.salary = datatable.salary' })
         Employee.find(1).name.should_not == "Elvis"
         Employee.find(1).salary.should == 3
         Employee.find(2).name.should_not == "Freddi"
