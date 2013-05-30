@@ -138,8 +138,8 @@ module BulkMethodsMixin
   #     { :id => 23, :salary => 2500, :company_id => 5 }
   #   ]
   #   options = {
-  #     :set_array => '"company_id = datatable.company_id"',
-  #     :where_datatable => '"#{table_name}.salary = datatable.salary"'
+  #     :set_array => '"salary = datatable.salary"',
+  #     :where_constraint => '"#{table_name}.salary <> datatable.salary"'
   #   }
   #   Employee.update_many(rows, options)
   #
@@ -150,7 +150,7 @@ module BulkMethodsMixin
   #     { :id => 23, :salary => 2500, :company_id => 5 }
   #   ]
   #   options = {
-  #     :set_array => '"company_id = datatable.company_id"',
+  #     :set_array => '"salary = datatable.salary"',
   #     :where_constraint => '"#{table_name}.active = true"'
   #   }
   #   Employee.update_many(rows, options)
