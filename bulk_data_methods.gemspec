@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name         = "bulk_data_methods"
   s.version      = BulkDataMethods::VERSION
   s.license      = 'New BSD License'
-  s.date         = '2013-05-30'
+  s.date         = '2013-10-10'
   s.summary      = 'MixIn used to extend ActiveRecord::Base classes implementing bulk insert and update operations through {#create_many} and {#update_many}.'
   s.description  = 'MixIn used to extend ActiveRecord::Base classes implementing bulk insert and update operations through {#create_many} and {#update_many}.'
   s.authors      = ["Keith Gabryelski"]
