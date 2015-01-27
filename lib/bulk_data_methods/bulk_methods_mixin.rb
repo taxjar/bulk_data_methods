@@ -64,18 +64,24 @@ module BulkMethodsMixin
 
     created_at_value = Time.zone.now
 
-    num_sequences_needed = rows.reject{|r| r[:id].present?}.length
-    if num_sequences_needed > 0
-      row_ids = connection.next_sequence_values(sequence_name, num_sequences_needed)
-    else
-      row_ids = []
+    row_ids = []
+    column_names = self.columns.map(&:name)
+    if column_names.include?("id")
+      num_sequences_needed = rows.reject{|r| r[:id].present?}.length
+      if num_sequences_needed > 0
+        row_ids = connection.next_sequence_values(sequence_name, num_sequences_needed)
+      end
     end
     rows.each do |row|
       # set the primary key if it needs to be set
-      row[:id] ||= row_ids.shift
+      if row[:id].present?
+        row[:id] ||= row_ids.shift
+      end
     end.each do |row|
       # set :created_at if need be
-      row[:created_at] ||= created_at_value
+      if row[:created_at].present?
+        row[:created_at] ||= created_at_value
+      end
     end.group_by do |row|
       respond_to?(:partition_table_name) ? partition_table_name(*partition_key_values(row)) : table_name
     end.each do |table_name, rows_for_table|
