@@ -66,7 +66,9 @@ module BulkMethodsMixin
 
     row_ids = []
     column_names = self.columns.map(&:name)
-    if column_names.include?("id")
+    has_id = column_names.include?("id")
+    has_created_at = column_names.include?("created_at")
+    if has_id
       num_sequences_needed = rows.reject{|r| r[:id].present?}.length
       if num_sequences_needed > 0
         row_ids = connection.next_sequence_values(sequence_name, num_sequences_needed)
@@ -74,12 +76,12 @@ module BulkMethodsMixin
     end
     rows.each do |row|
       # set the primary key if it needs to be set
-      if row[:id].present?
+      if has_id
         row[:id] ||= row_ids.shift
       end
     end.each do |row|
       # set :created_at if need be
-      if row[:created_at].present?
+      if has_created_at
         row[:created_at] ||= created_at_value
       end
     end.group_by do |row|
