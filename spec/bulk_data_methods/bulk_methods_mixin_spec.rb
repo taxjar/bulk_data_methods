@@ -9,6 +9,11 @@ describe "BulkMethodsMixin" do
       extend BulkMethodsMixin
     end
     create_tables
+
+    class Name < ActiveRecord::Base
+      extend BulkMethodsMixin
+    end
+    create_tables_without_ids_or_created
   end
 
   describe "create_many" do
@@ -89,8 +94,8 @@ describe "BulkMethodsMixin" do
         Employee.create_many([{ :name => 'Keith', :company_id => 2 },
                               { :name => 'Mike', :company_id => 3 },
                               { :name => 'Alex', :company_id => 1 }])
-        Employee.all.each{ |r| r.created_at.between?(Time.now - 3.minute, Time.now + 3.minute) }.
-            should be_true
+        Employee.all.map{ |r| r.created_at.between?(Time.now - 3.minute, Time.now + 3.minute) }.
+            should == [true, true, true]
       end
     end # when try to create records without the given created_at
 
@@ -212,6 +217,25 @@ describe "BulkMethodsMixin" do
       end # null values
 
     end # when try to create records in the table that has all the different sql types
+
+    describe "without ids or created_at" do
+
+      context "when call method with empty rows" do
+        it "returns empty array" do
+          Name.create_many("").should == []
+        end
+      end # when call method with empty rows
+
+      context "when try to create records without ids or createds" do
+        it "records created" do
+          Name.create_many([{ :name => 'Keith' },
+                            { :name => 'Mike' },
+                            { :name => 'Alex' }])
+          Name.all.map{ |r| r.name }.should == ["Keith", "Mike", "Alex"]
+        end
+      end
+
+    end
 
   end # create_many
 
