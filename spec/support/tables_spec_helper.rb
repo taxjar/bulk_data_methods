@@ -36,11 +36,21 @@ module TablesSpecHelper
     SQL
   end
 
+  def create_tables_without_ids_or_created
+    ActiveRecord::Base.connection.execute <<-SQL
+      create table names
+      (
+          name             text null
+      );
+    SQL
+  end
+
   def drop_tables
     ActiveRecord::Base.connection.execute <<-SQL
       drop schema employees_partitions cascade;
       drop table employees;
       drop table companies;
+      drop table names;
     SQL
   end
 
