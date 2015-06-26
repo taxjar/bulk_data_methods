@@ -174,7 +174,7 @@ describe "BulkMethodsMixin" do
       context "non-null values" do
         it "returns record with all sql types" do
           # NOTE(hofer): Expectation is that this will not raise an error.
-          Employee.create_many([{ :name => 'Keith',
+          expect{ Employee.create_many([{ :name => 'Keith',
                                    :company_id => 2,
                                    :created_at => Time.zone.parse('2012-12-21'),
                                    :updated_at => '2012-12-21 00:00:00',
@@ -189,15 +189,14 @@ describe "BulkMethodsMixin" do
                                    :test_boolean => false,
                                    :test_xml => ["text"].to_xml,
                                    :test_tsvector => "test string",
-                                 }])
-          expect(Employee.all.size).to eq 1
+                                 }]) }.to_not raise_error
         end
       end # non-null values
 
       context "null values" do
         it "returns record with all sql types" do
           # NOTE(hofer): Expectation is that this will not raise an error.
-          Employee.create_many([{ :name => 'Keith',
+          expect{ Employee.create_many([{ :name => 'Keith',
                                    :company_id => 2,
                                    :created_at => nil,
                                    :updated_at => nil,
@@ -213,8 +212,7 @@ describe "BulkMethodsMixin" do
                                    :test_boolean => nil,
                                    :test_xml => nil,
                                    :test_tsvector => nil,
-                                 }])
-          expect(Employee.all.size).to eq 1
+                                 }]) }.to_not raise_error
         end
       end # null values
 
@@ -286,9 +284,9 @@ describe "BulkMethodsMixin" do
 
       context "when try to update two records and doesn't the same number of keys" do
         it "raises BulkUploadDataInconsistent" do
-          expect(lambda { Employee.update_many([{ :id => 1, :name => 'Elvis', :salary => 1002  },
+          expect { Employee.update_many([{ :id => 1, :name => 'Elvis', :salary => 1002  },
                                          { :name => 'Freddi', :id => 2}])
-          }).to raise_error(BulkMethodsMixin::BulkUploadDataInconsistent)
+          }.to raise_error(BulkMethodsMixin::BulkUploadDataInconsistent)
         end
       end # when try to update two records and doesn't the same number of keys
 
