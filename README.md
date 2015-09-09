@@ -1,14 +1,13 @@
 bulk_data_methods
 ==================
-MixIn used to extend ActiveRecord::Base classes implementing bulk insert and update operations
-through {#create_many} and {#update_many}.
+MixIn used to extend ActiveRecord::Base classes implementing bulk insert and update operations through {#create_many} and {#update_many}.
 
 Examples
 ========
 
 ```ruby
 class Company < ActiveRecord::Base
-  extend BulkMethodsMixin
+  include BulkDataMethods::Mixin
 end
 ```
 __________________________

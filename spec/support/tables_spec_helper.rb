@@ -3,8 +3,13 @@ require 'spec_helper'
 module TablesSpecHelper
 
   class Company < ActiveRecord::Base
-    extend BulkMethodsMixin
-    has_many :employees, :class_name => 'Company', :conditions => "companies.id = employees.companies_id"
+    include BulkDataMethods::Mixin
+
+    if ActiveRecord::VERSION::MAJOR >= 4
+      has_many :employees, -> { where "companies.id = employees.companies_id" }, :class_name => 'Company'
+    else
+      has_many :employees, :class_name => 'Company', :conditions => "companies.id = employees.companies_id"
+    end
   end
 
   def create_tables
