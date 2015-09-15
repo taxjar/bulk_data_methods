@@ -66,11 +66,13 @@ module BulkDataMethods
         returning = []
 
         created_at_value = Time.zone.now
+        updated_at_value = created_at_value
 
         row_ids = []
         column_names = self.columns.map(&:name)
         has_id = column_names.include?("id")
         has_created_at = column_names.include?("created_at")
+        has_updated_at = column_names.include?("updated_at")
         if has_id
           num_sequences_needed = rows.reject{|r| r[:id].present?}.length
           if num_sequences_needed > 0
@@ -83,9 +85,12 @@ module BulkDataMethods
             row[:id] ||= row_ids.shift
           end
         end.each do |row|
-          # set :created_at if need be
+          # set :created_at/:updated_at if need be
           if has_created_at
             row[:created_at] ||= created_at_value
+          end
+          if has_updated_at
+            row[:updated_at] ||= updated_at_value
           end
         end.group_by do |row|
           respond_to?(:partition_table_name) ? partition_table_name(*partition_key_values(row)) : table_name
