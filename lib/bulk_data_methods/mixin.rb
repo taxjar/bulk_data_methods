@@ -1,4 +1,3 @@
-
 module BulkDataMethods
 
   # exception thrown when row data structures are inconsistent between rows in single call to {#create_many} or {#update_many}
@@ -236,9 +235,9 @@ module BulkDataMethods
                 column_name = column_name.to_s
                 columns_hash_value = columns_hash[column_name]
                 if i == 0
-                  "#{connection.quote(column_value,columns_hash_value)}::#{columns_hash_value.sql_type} as #{column_name}"
+                  "#{connection.quote(column_value)}::#{columns_hash_value.sql_type} as #{column_name}"
                 else
-                  connection.quote(column_value,columns_hash_value)
+                  connection.quote(column_value)
                 end
               end.join(',')
             end
