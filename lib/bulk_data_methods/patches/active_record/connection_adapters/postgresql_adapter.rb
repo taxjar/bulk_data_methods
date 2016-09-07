@@ -1,11 +1,28 @@
 require 'active_record'
 require 'active_record/connection_adapters/abstract_adapter'
 require 'active_record/connection_adapters/postgresql_adapter'
+require 'active_record/connection_adapters/postgresql/quoting'
 
 module ActiveRecord
 
   module ConnectionAdapters
+    module PostgreSQL
+      module Quoting
 
+        private
+        # ****** BEGIN PATCH ******
+        # when column of postgresql is an array, call super and fail. for example with [2] or ["2"].
+        # add condition for array elswhere call super
+        # @param [Value]
+        def _quote(value)
+          case value
+            when Array      then "'{#{value.join(',')}}'"
+            else
+              super
+          end
+        end
+      end
+    end
     # Patches extending the postgres adapter with new operations for managing
     # sequences (and sets of sequence values).
     #
