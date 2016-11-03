@@ -235,9 +235,17 @@ module BulkDataMethods
                 column_name = column_name.to_s
                 columns_hash_value = columns_hash[column_name]
                 if i == 0
-                  "#{connection.quote(column_value)}::#{columns_hash_value.sql_type} as #{column_name}"
+                  if columns_hash_value.sql_type=="jsonb" && !column_value.nil? && !column_value!='NULL'
+                    "'#{connection.quote(column_value)}'::#{columns_hash_value.sql_type} as #{column_name}"
+                  else
+                    "#{connection.quote(column_value)}::#{columns_hash_value.sql_type} as #{column_name}"
+                  end
                 else
-                  connection.quote(column_value)
+                  if columns_hash_value.sql_type=="jsonb" && !column_value.nil? && !column_value!='NULL'
+                    "'#{connection.quote(column_value)}'"
+                  else
+                    connection.quote(column_value)
+                  end
                 end
               end.join(',')
             end
