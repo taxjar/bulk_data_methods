@@ -1,4 +1,3 @@
-
 module BulkDataMethods
 
   # exception thrown when row data structures are inconsistent between rows in single call to {#create_many} or {#update_many}
@@ -105,7 +104,7 @@ module BulkDataMethods
               end
             end
             column_values = column_names.map do |column_name|
-              quote_value(row[column_name], columns_hash[column_name.to_s])
+              connection.quote(row[column_name], columns_hash[column_name.to_s])
             end.join(',')
             "(#{column_values})"
           end.each_slice(options[:slice_size]) do |insert_slice|
@@ -236,9 +235,17 @@ module BulkDataMethods
                 column_name = column_name.to_s
                 columns_hash_value = columns_hash[column_name]
                 if i == 0
-                  "#{quote_value(column_value, columns_hash_value)}::#{columns_hash_value.sql_type} as #{column_name}"
+                  if columns_hash_value.sql_type=="jsonb" && !column_value.nil? && !column_value!='NULL'
+                    "'#{connection.quote(column_value)}'::#{columns_hash_value.sql_type} as #{column_name}"
+                  else
+                    "#{connection.quote(column_value)}::#{columns_hash_value.sql_type} as #{column_name}"
+                  end
                 else
-                  quote_value(column_value, columns_hash_value)
+                  if columns_hash_value.sql_type=="jsonb" && !column_value.nil? && !column_value!='NULL'
+                    "'#{connection.quote(column_value)}'"
+                  else
+                    connection.quote(column_value)
+                  end
                 end
               end.join(',')
             end
@@ -257,7 +264,8 @@ module BulkDataMethods
               #{eval(returning_clause)}
             SQL
             sql = sql_update_string
-#puts "SQL> #{sql}"            
+#binding.pry
+#puts "SQL> #{sql}"
             returning += find_by_sql(sql_update_string)
           end
         end
