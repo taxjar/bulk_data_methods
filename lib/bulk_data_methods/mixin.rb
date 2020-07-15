@@ -105,7 +105,7 @@ module BulkDataMethods
               end
             end
             column_values = column_names.map do |column_name|
-              quote_value(row[column_name], columns_hash[column_name.to_s])
+              connection.quote(row[column_name])
             end.join(',')
             "(#{column_values})"
           end.each_slice(options[:slice_size]) do |insert_slice|
@@ -236,9 +236,9 @@ module BulkDataMethods
                 column_name = column_name.to_s
                 columns_hash_value = columns_hash[column_name]
                 if i == 0
-                  "#{quote_value(column_value, columns_hash_value)}::#{columns_hash_value.sql_type} as #{column_name}"
+                  "#{connection.quote(column_value)}::#{columns_hash_value.sql_type} as #{column_name}"
                 else
-                  quote_value(column_value, columns_hash_value)
+                  connection.quote(column_value)
                 end
               end.join(',')
             end
