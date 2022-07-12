@@ -142,9 +142,9 @@ describe "BulkDataMethods::Mixin" do
 
     context "when try to create two records and doesn't the same number of keys" do
       it "raises BulkUploadDataInconsistent" do
-        expect(lambda { Employee.create_many([{ :company_id => 2, :name => 'Keith', :salary => 1002  },
+        expect { Employee.create_many([{ :company_id => 2, :name => 'Keith', :salary => 1002  },
                                        { :name => 'Alex', :company_id => 3}])
-        }).to raise_error(BulkDataMethods::BulkDataInconsistent)
+        }.to raise_error(BulkDataMethods::BulkDataInconsistent)
       end
     end # when try to create two records and doesn't the same number of keys
 
@@ -339,11 +339,11 @@ describe "BulkDataMethods::Mixin" do
     context "when try to update two records and doesn't
              the same number of keys and options check_consistency equal false" do
       it "raises ActiveRecord::StatementInvalid" do
-        expect(lambda {
+        expect {
           Employee.update_many([{ :id => 1, :name => 'Elvis', :salary => 1002  },
                                 { :name => 'Freddi', :id => 2}],
                                 { :check_consistency => false })
-        }).to raise_error(ActiveRecord::StatementInvalid)
+        }.to raise_error(ActiveRecord::StatementInvalid)
       end
     end # when try to update two records and doesn't
         # the same number of keys and options check_consistency equal false
