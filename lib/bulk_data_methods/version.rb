@@ -1,3 +1,3 @@
 module BulkDataMethods
-  VERSION = "6.0.0"
+  VERSION = "7.2.2.1"
 end
